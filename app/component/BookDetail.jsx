@@ -37,7 +37,7 @@ export default function BookDetail({ route, navigation }) {
     <SafeAreaView
       style={[
         styles.safeArea,
-        { backgroundColor: isDark ? colors.BACKGROUND : colors.WHITE },
+        { backgroundColor: isDark ? colors.BLACK : colors.WHITE },
       ]}
     >
       <StatusBar
@@ -76,13 +76,13 @@ export default function BookDetail({ route, navigation }) {
           <Text
             style={[
               styles.title,
-              { color: isDark ? colors.WHITE : colors.BLACK },
+              { color: isDark ? colors.WHITE : colors.WHITE },
             ]}
           >
             {book.title}
           </Text>
           <Text
-            style={[styles.author, { color: isDark ? colors.GRAY : "#444" }]}
+            style={[styles.author, { color: isDark ? colors.WHITE : colors.PRIMARY }]}
           >
             by {book.author}
           </Text>
@@ -90,15 +90,15 @@ export default function BookDetail({ route, navigation }) {
           <View style={styles.metaInfo}>
             <View style={styles.metaGroup}>
               <Text style={styles.metaLabel}>Rating</Text>
-              <Text style={styles.metaValue}>{book.rating}</Text>
+              <Text style={[styles.metaValue, { color: isDark ? colors.WHITE : colors.PRIMARY }]}>{book.rating}</Text>
             </View>
             <View style={styles.metaGroup}>
               <Text style={styles.metaLabel}>Pages</Text>
-              <Text style={styles.metaValue}>{book.pages}</Text>
+              <Text style={[styles.metaValue, { color: isDark ? colors.WHITE : colors.PRIMARY }]}>{book.pages}</Text>
             </View>
             <View style={styles.metaGroup}>
               <Text style={styles.metaLabel}>Language</Text>
-              <Text style={styles.metaValue}>{book.language}</Text>
+              <Text style={[styles.metaValue, { color: isDark ? colors.WHITE : colors.PRIMARY }]}>{book.language}</Text>
             </View>
           </View>
 
@@ -115,9 +115,9 @@ export default function BookDetail({ route, navigation }) {
             <TouchableOpacity style={styles.readSampleButton} onPress={() => navigation.navigate("BookRead", { book })}>
               <Text style={styles.readSampleText}>Read sample</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.getEbookButton}>
+            {/* <TouchableOpacity style={styles.getEbookButton}>
               <Text style={styles.buttonText}>Get this e-book</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </View>
       </View>

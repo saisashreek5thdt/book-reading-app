@@ -1,16 +1,16 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import {
-    Dimensions,
-    Image,
-    Platform,
-    SafeAreaView,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Dimensions,
+  Image,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 import Feather from "@expo/vector-icons/Feather";
@@ -217,7 +217,7 @@ export default function BookRead() {
   }
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: isDark ? colors.BACKGROUND : colors.WHITE }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: isDark ? colors.BLACK : colors.WHITE }]}>
       <StatusBar barStyle={isDark ? "light-content" : "dark-content"} backgroundColor={colors.PRIMARY} />
 
       {/* Header */}
