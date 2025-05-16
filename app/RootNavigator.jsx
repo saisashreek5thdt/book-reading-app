@@ -8,6 +8,7 @@ import Bookmark from "./screens/Bookmark";
 import Home from "./screens/Home";
 import Profile from "./screens/Profile";
 
+import BookRead from "./screens/BookRead";
 import colors from "./utils/colors";
 import { useTheme } from "./utils/theme";
 
@@ -78,6 +79,11 @@ export default function RootNavigator() {
         name="BookDetail"
         component={BookDetail}
         options={({ route }) => ({ title: route.params?.book?.title || "Book Detail" })}
+      />
+      <Stack.Screen 
+        name="BookRead"
+        component={BookRead}
+        options={({ route }) => ({ title: route.params?.book?.title || "Book Read" })}
       />
     </Stack.Navigator>
   );

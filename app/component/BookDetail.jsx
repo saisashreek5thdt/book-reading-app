@@ -112,7 +112,7 @@ export default function BookDetail({ route, navigation }) {
           </Text>
 
           <View style={styles.actionButtons}>
-            <TouchableOpacity style={styles.readSampleButton}>
+            <TouchableOpacity style={styles.readSampleButton} onPress={() => navigation.navigate("BookRead", { book })}>
               <Text style={styles.readSampleText}>Read sample</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.getEbookButton}>
