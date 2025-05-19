@@ -1,20 +1,20 @@
+import Feather from "@expo/vector-icons/Feather";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import * as Speech from "expo-speech";
 import { useEffect, useState } from "react";
 import {
   Dimensions,
   Image,
-  Platform,
   SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 
-import Feather from "@expo/vector-icons/Feather";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useBookmarks } from "../utils/BookMarkContext";
 import colors from "../utils/colors";
 import { useTheme } from "../utils/theme";
@@ -29,12 +29,11 @@ const LAYOUT_TYPES = {
 
 // Screen dimensions
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
-const PAGE_HEIGHT = SCREEN_HEIGHT * 0.7;
+const PAGE_HEIGHT = SCREEN_HEIGHT * 1;
 
 export default function BookRead() {
   const route = useRoute();
   const navigation = useNavigation();
-
   const { theme } = useTheme();
   const isDark = theme === "dark";
   const { addBookmark } = useBookmarks();
@@ -43,6 +42,8 @@ export default function BookRead() {
   const [fontSize, setFontSize] = useState(16);
   const [currentPage, setCurrentPage] = useState(0);
   const [chunks, setChunks] = useState([]);
+  const [isReading, setIsReading] = useState(false);
+  const [highlightedKey, setHighlightedKey] = useState(null);
 
   // Get book data from route params
   const bookData = route?.params?.book || null;
@@ -51,29 +52,21 @@ export default function BookRead() {
   const handleBookmark = () => {
     if (bookData) {
       addBookmark(bookData);
-      if (Platform.OS === "android") {
-        // ToastAndroid.show("Book added to bookmarks!", ToastAndroid.SHORT);
-        alert("Bookmarked!");
-      } else {
-        alert("Bookmarked!");
-      }
+      alert("Bookmarked!");
     }
   };
 
   // Prepare content blocks based on layout
   const prepareContentBasedOnLayout = () => {
     if (!bookData) return [];
-
     const { layout } = bookData;
     const rawContent = bookData.content || "";
     const textContent = rawContent.split("\n").map((para) => para.trim()).filter(Boolean);
     const images = bookData.images || [];
-
     let contentBlocks = [];
 
     switch (layout) {
       case LAYOUT_TYPES.FULL_TEXT:
-        // Only text blocks
         contentBlocks = textContent.map((para, index) => ({
           type: "text",
           content: para,
@@ -90,7 +83,6 @@ export default function BookRead() {
               key: `image-${i}`,
             });
           }
-
           for (let j = 0; j < 2; j++) {
             const textIndex = i * 2 + j;
             if (textIndex < textContent.length) {
@@ -116,7 +108,6 @@ export default function BookRead() {
               });
             }
           }
-
           if (i < images.length) {
             contentBlocks.push({
               type: "image",
@@ -134,14 +125,12 @@ export default function BookRead() {
           content: para,
           key: `text-${index}`,
         }));
-
         const imageBlocks = images.map((url, index) => ({
           type: "image",
           content: url,
           key: `image-${index}`,
         }));
 
-        // Interleave text and images
         let maxLen = Math.max(textBlocks.length, imageBlocks.length);
         contentBlocks = [];
         for (let i = 0; i < maxLen; i++) {
@@ -156,20 +145,19 @@ export default function BookRead() {
 
   // Split content into pages
   const splitContentIntoPages = (contentBlocks) => {
-    if (!Array.isArray(contentBlocks) || contentBlocks.length === 0) {
-      return [[]];
-    }
+    if (!Array.isArray(contentBlocks) || contentBlocks.length === 0) return [[]];
 
     const pages = [];
     let currentHeight = 0;
     let page = [];
 
     for (let item of contentBlocks) {
-      const estimatedHeight = item.type === "text"
-        ? Math.min(fontSize * 1.8 * item.content.length / 25, PAGE_HEIGHT * 0.7)
-        : 220;
+      const estimatedHeight =
+        item.type === "text"
+          ? Math.min(fontSize * 1.8 * item.content.length / 25, PAGE_HEIGHT * 0.3)
+          : 220;
 
-      if (currentHeight + estimatedHeight > PAGE_HEIGHT && page.length > 0) {
+      if (currentHeight + estimatedHeight -4 > PAGE_HEIGHT && page.length > 0) {
         pages.push(page);
         page = [];
         currentHeight = 0;
@@ -180,7 +168,6 @@ export default function BookRead() {
     }
 
     if (page.length > 0) pages.push(page);
-
     return pages;
   };
 
@@ -204,6 +191,46 @@ export default function BookRead() {
 
   const currentContent = chunks[currentPage] || [];
 
+  // Start reading current page
+  const speakPageText = () => {
+    const pageText = currentContent
+      .filter((item) => item.type === "text")
+      .map((item) => item.content)
+      .join(" ");
+    if (pageText) {
+      Speech.speak(pageText,{
+      voice: "com.apple.voice.compact.en-IN.ravi",
+      language: "en-IN",  // 👈 Indian English accent
+      rate: 0.7,
+      pitch: 1.0,
+    });
+      highlightNextTextBlock(0);
+      setIsReading(true);
+    }
+  };
+
+  const stopReading = () => {
+    Speech.stop();
+    setIsReading(false);
+    setHighlightedKey(null);
+  };
+
+  const highlightNextTextBlock = (index) => {
+    if (index >= currentContent.length) return;
+
+    const nextItem = currentContent[index];
+    if (nextItem && nextItem.type === "text") {
+      setHighlightedKey(nextItem.key);
+      setTimeout(() => {
+        highlightNextTextBlock(index + 1);
+      }, nextItem.content.length * 60); // Adjust timing as needed
+    } else {
+      setTimeout(() => {
+        highlightNextTextBlock(index + 1);
+      }, 500);
+    }
+  };
+
   // Fallback UI if no book data
   if (!bookData) {
     return (
@@ -226,7 +253,6 @@ export default function BookRead() {
           <Feather name="chevron-left" size={24} color={colors.WHITE} />
           <Text style={styles.headerText}>Back</Text>
         </TouchableOpacity>
-
         <View style={styles.rightHeader}>
           <TouchableOpacity style={styles.iconButton} onPress={() => setFontSize(prev => Math.min(prev + 2, 30))}>
             <MaterialIcons name="text-increase" size={24} color={colors.WHITE} />
@@ -239,6 +265,9 @@ export default function BookRead() {
           </TouchableOpacity>
           <TouchableOpacity style={styles.iconButton} onPress={handleBookmark}>
             <Feather name="bookmark" size={24} color={colors.WHITE} />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.iconButton} onPress={isReading ? stopReading : speakPageText}>
+            <Feather name={isReading ? "pause" : "play"} size={24} color={colors.WHITE} />
           </TouchableOpacity>
         </View>
       </View>
@@ -261,6 +290,7 @@ export default function BookRead() {
                 {
                   fontSize,
                   color: isDark ? colors.WHITE : colors.BLACK,
+                  backgroundColor: highlightedKey === item.key ? "#FFFF99" : "transparent",
                 },
               ]}
             >
@@ -269,7 +299,7 @@ export default function BookRead() {
           ) : (
             <Image
               key={item.key}
-              source={{ uri: item.content }}
+              source={typeof item.content === "number" ? item.content : { uri: item.content.trim() }}
               style={styles.image}
               resizeMode="cover"
               onError={(e) => console.log("Image load error:", e.nativeEvent.error)}
@@ -282,19 +312,23 @@ export default function BookRead() {
       <View style={styles.paginationControls}>
         <TouchableOpacity
           disabled={currentPage <= 0}
-          onPress={() => setCurrentPage(p => p - 1)}
+          onPress={() => {
+            stopReading();
+            setCurrentPage(p => p - 1);
+          }}
           style={styles.navButton}
         >
           <Text style={styles.navText}>Previous</Text>
         </TouchableOpacity>
-
         <Text style={styles.pageIndicator}>
           Page {currentPage + 1} of {chunks.length}
         </Text>
-
         <TouchableOpacity
           disabled={currentPage >= chunks.length - 1}
-          onPress={() => setCurrentPage(p => p + 1)}
+          onPress={() => {
+            stopReading();
+            setCurrentPage(p => p + 1);
+          }}
           style={styles.navButton}
         >
           <Text style={styles.navText}>Next</Text>
@@ -312,6 +346,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    marginTop:30,
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
@@ -344,13 +379,14 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   pageContent: {
-    padding: 16,
-    minHeight: PAGE_HEIGHT,
+    padding:15,
+    minHeight: PAGE_HEIGHT-170,
   },
   bookText: {
     lineHeight: 28,
-    textAlign: "justify",
+    textAlign: "left",
     marginBottom: 16,
+    width: "100%",
   },
   image: {
     width: "100%",
