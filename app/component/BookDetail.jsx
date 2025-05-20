@@ -53,14 +53,19 @@ export default function BookDetail({ route, navigation }) {
             onPress={() => navigation.goBack()}
           >
             <Feather name="chevron-left" size={24} color={colors.WHITE} />
-            <Text style={[styles.headerText, { color: colors.WHITE }]}>Back</Text>
+            <Text style={[styles.headerText, { color: colors.WHITE }]}>
+              Back
+            </Text>
           </TouchableOpacity>
 
           <View style={styles.shareOptions}>
             <TouchableOpacity style={styles.iconButton}>
               <Feather name="share" size={24} color={colors.WHITE} />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.iconButton} onPress={handleBookmark}>
+            <TouchableOpacity
+              style={styles.iconButton}
+              onPress={handleBookmark}
+            >
               <Feather name="bookmark" size={24} color={colors.WHITE} />
             </TouchableOpacity>
           </View>
@@ -68,7 +73,17 @@ export default function BookDetail({ route, navigation }) {
 
         {/* Book Image */}
         <View style={styles.imageContainer}>
-          <Image style={styles.bookImage} source={{ uri: book.imageURL }} />
+          <Image
+            style={styles.bookImage}
+            source={
+              typeof book.imageURL === "string" &&
+              book.imageURL.startsWith("http")
+                ? { uri: book.imageURL }
+                : typeof book.imageURL === "number"
+                ? book.imageURL // already a require()
+                : require("../../assets/images/book.jpg") // fallback or local static asset
+            }
+          />
         </View>
 
         {/* Book Info */}
@@ -82,7 +97,10 @@ export default function BookDetail({ route, navigation }) {
             {book.title}
           </Text>
           <Text
-            style={[styles.author, { color: isDark ? colors.WHITE : colors.PRIMARY }]}
+            style={[
+              styles.author,
+              { color: isDark ? colors.WHITE : colors.PRIMARY },
+            ]}
           >
             by {book.author}
           </Text>
@@ -90,15 +108,36 @@ export default function BookDetail({ route, navigation }) {
           <View style={styles.metaInfo}>
             <View style={styles.metaGroup}>
               <Text style={styles.metaLabel}>Rating</Text>
-              <Text style={[styles.metaValue, { color: isDark ? colors.WHITE : colors.PRIMARY }]}>{book.rating}</Text>
+              <Text
+                style={[
+                  styles.metaValue,
+                  { color: isDark ? colors.WHITE : colors.PRIMARY },
+                ]}
+              >
+                {book.rating}
+              </Text>
             </View>
             <View style={styles.metaGroup}>
               <Text style={styles.metaLabel}>Pages</Text>
-              <Text style={[styles.metaValue, { color: isDark ? colors.WHITE : colors.PRIMARY }]}>{book.pages}</Text>
+              <Text
+                style={[
+                  styles.metaValue,
+                  { color: isDark ? colors.WHITE : colors.PRIMARY },
+                ]}
+              >
+                {book.pages}
+              </Text>
             </View>
             <View style={styles.metaGroup}>
               <Text style={styles.metaLabel}>Language</Text>
-              <Text style={[styles.metaValue, { color: isDark ? colors.WHITE : colors.PRIMARY }]}>{book.language}</Text>
+              <Text
+                style={[
+                  styles.metaValue,
+                  { color: isDark ? colors.WHITE : colors.PRIMARY },
+                ]}
+              >
+                {book.language}
+              </Text>
             </View>
           </View>
 
@@ -112,7 +151,10 @@ export default function BookDetail({ route, navigation }) {
           </Text>
 
           <View style={styles.actionButtons}>
-            <TouchableOpacity style={styles.readSampleButton} onPress={() => navigation.navigate("BookRead", { book })}>
+            <TouchableOpacity
+              style={styles.readSampleButton}
+              onPress={() => navigation.navigate("BookRead", { book })}
+            >
               <Text style={styles.readSampleText}>Read sample</Text>
             </TouchableOpacity>
             {/* <TouchableOpacity style={styles.getEbookButton}>

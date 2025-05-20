@@ -1,5 +1,6 @@
 // App.js
 import { NavigationContainer } from "@react-navigation/native";
+import 'expo-dev-client';
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";

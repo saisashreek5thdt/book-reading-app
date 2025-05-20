@@ -9,12 +9,28 @@ export default function BookCard({ book, onPress }) {
     <TouchableOpacity style={styles.bookListContainer} onPress={onPress}>
       <Image
         style={styles.bookList}
-        source={{ uri: book.imageURL }}
+        source={
+          typeof book.imageURL === "string" && book.imageURL.startsWith("http")
+            ? { uri: book.imageURL }
+            : typeof book.imageURL === "number"
+            ? book.imageURL // already a require()
+            : require("../../assets/images/book.jpg") // fallback or local static asset
+        }
       />
-      <Text style={[styles.bookListTitle, { color: theme === 'dark' ? colors.WHITE : colors.BLACK }]}>
+      <Text
+        style={[
+          styles.bookListTitle,
+          { color: theme === "dark" ? colors.WHITE : colors.BLACK },
+        ]}
+      >
         {book.title}
       </Text>
-      <Text style={[styles.bookListAuthor, { color: theme === 'dark' ? colors.GRAY : colors.GRAY }]}>
+      <Text
+        style={[
+          styles.bookListAuthor,
+          { color: theme === "dark" ? colors.GRAY : colors.GRAY },
+        ]}
+      >
         by {book.author}
       </Text>
     </TouchableOpacity>

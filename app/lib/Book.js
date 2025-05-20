@@ -1,3 +1,4 @@
+import cover from "../../assets/images/chandrayaan/Cover.png";
 import page1 from "../../assets/images/chandrayaan/Page1.png";
 import page2 from "../../assets/images/chandrayaan/Page2.png";
 import page3 from "../../assets/images/chandrayaan/Page3.png";
@@ -9,12 +10,11 @@ export const books = [
     id: 1,
     title: "Chandrayan",
     author: "Yuvraj Malik",
-    imageURL:
-      "https://img.freepik.com/free-vector/gradient-book-company-logo-template_23-2148888104.jpg ",
+    imageURL: cover,
     rating: 4.5,
     pages: 197,
     language: "English",
-    description: `Combining magic, mysticism, wisdom and wonder into an inspiring tale of self-discovery, The Alchemist has become a modern classic, selling millions of copies around the world and transforming the lives of countless readers across generations.`,
+    description: `Chandrayaan 3, Tiranga Flies on The Moon. Little Veer is eager to know what is so great about the successful landing of the Chandrayaan 3 on the Moon. His wise Dadaji makes use of this oppurtunity to tell him all...`,
     layout: "IMAGE_TOP_TEXT_BOTTOM",
     content: `Ten year old Veer is a very intelligent and curious boy. He and his Dadaji are great friends. They sleep in the same room. At bedtime before falling asleep, Dadaji makes up interesting stories on any topic that he feels little Veer should be aware of.
               Veer's school was soon to hold a workshop on Space. Veer wanted to actively participate in this workshop. He was very intrested in learning about India's Space Research Programme.
@@ -33,7 +33,7 @@ Saint Do you know how high it is?
 Princess - It's visible just above that tree in the palace garden.
 I think it is just as high as that tree.
 Saint What does the moon look like?
-Princess It is white and bright like silver.Veer - Wow! I can't wait to know more. Tell me all, Dadaji. All the news channels too were very proudly broadcasting India's moonlanding, and everyone was so happy. Why was it such a big news? After all, hasn';t`,
+Princess - It is white and bright like silver. Veer - Wow! I can't wait to know more. Tell me all, Dadaji. All the news channels too were very proudly broadcasting India's moonlanding, and everyone was so happy. Why was it such a big news? After all, hasn't`,
     images: [page1, page2, page3, page4, page5, page6],
   },
 ];

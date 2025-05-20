@@ -24,7 +24,7 @@ export default function Home({ navigation }) {
 const styles = StyleSheet.create({
   bookContainer: {
     padding: 20,
-    marginTop: 20,
+    marginTop: 0,
     flex: 1,
     width: "100%",
     height: "100%",
