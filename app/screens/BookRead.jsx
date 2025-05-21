@@ -56,8 +56,7 @@ export default function BookRead() {
 
       // Prefer Indian Female Voice
       const indianFemale = voices.find(
-        (v) =>
-          v.language === "en-IN" && v.name.toLowerCase().includes("female")
+        (v) => v.language === "en-IN" && v.name.toLowerCase().includes("female")
       );
       // Fallback to any en-IN voice
       const fallbackVoice = voices.find((v) => v.language === "en-IN");
@@ -323,13 +322,21 @@ export default function BookRead() {
             style={styles.iconButton}
             onPress={() => setFontSize((prev) => Math.min(prev + 2, 30))}
           >
-            <MaterialIcons name="text-increase" size={24} color={colors.WHITE} />
+            <MaterialIcons
+              name="text-increase"
+              size={24}
+              color={colors.WHITE}
+            />
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.iconButton}
             onPress={() => setFontSize((prev) => Math.max(prev - 2, 12))}
           >
-            <MaterialIcons name="text-decrease" size={24} color={colors.WHITE} />
+            <MaterialIcons
+              name="text-decrease"
+              size={24}
+              color={colors.WHITE}
+            />
           </TouchableOpacity>
           <TouchableOpacity style={styles.iconButton}>
             <Feather name="share" size={24} color={colors.WHITE} />
@@ -408,21 +415,40 @@ export default function BookRead() {
           }}
           style={styles.navButton}
         >
-          <Text style={styles.navText}>Previous</Text>
+          <Text style={styles.navText}>
+            {currentPage === 0 ? "" : "Previous"}
+          </Text>
         </TouchableOpacity>
         <Text style={styles.pageIndicator}>
           Page {currentPage + 1} of {chunks.length}
         </Text>
-        <TouchableOpacity
-          disabled={currentPage >= chunks.length - 1}
-          onPress={() => {
-            stopReading();
-            setCurrentPage((p) => p + 1);
-          }}
-          style={styles.navButton}
-        >
-          <Text style={styles.navText}>Next</Text>
-        </TouchableOpacity>
+        
+        {currentPage >= chunks.length - 1 ? (
+          // Show Home Icon at last page
+          <TouchableOpacity
+            onPress={() => {
+              stopReading();
+              navigation.reset({
+                index: 0,
+                routes: [{ name: "Main", params: { screen: "Home" } }],
+              });
+            }}
+            style={styles.navButton}
+          >
+            <Feather name="home" size={20} color={colors.WHITE} />
+          </TouchableOpacity>
+        ) : (
+          // Normal Next button for other pages
+          <TouchableOpacity
+            onPress={() => {
+              stopReading();
+              setCurrentPage((p) => p + 1);
+            }}
+            style={styles.navButton}
+          >
+            <Text style={styles.navText}>Next</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </SafeAreaView>
   );
